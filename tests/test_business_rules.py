@@ -4,6 +4,7 @@ from business_rules import (
     get_rental_discount,
     needs_inspection,
     requires_deposit,
+    total_quoted,
 )
 
 
@@ -58,23 +59,50 @@ def test_quote_applies_twenty_percent_discount():
 def test_quote_contractor_discount_before_damage_waiver():
     assert round(calculate_quote(60.00, 2, contractor=True), 2) == 133.00
 
+
 def test_deposit_below_limit():
     assert requires_deposit(999.99) is False
+
 
 def test_deposit_at_limit():
     assert requires_deposit(1000.00) is True
 
+
 def test_deposit_above_limit():
     assert requires_deposit(1000.01) is True
+
 
 def test_inspection_below_required_days():
     assert needs_inspection(4, 800.01) is False
 
+
 def test_inspection_at_required_days():
     assert needs_inspection(5, 800.01) is True
+
 
 def test_inspection_at_quote_limit():
     assert needs_inspection(5, 800.00) is False
 
+
 def test_inspection_below_quote_limit():
     assert needs_inspection(5, 799.99) is False
+
+
+def test_total_quoted_empty():
+    assert round(total_quoted([]), 2) == 0.00
+
+
+def test_total_quoted_one_rental():
+    rentals = [
+        {"customer": "Alvarez", "daily_rate": 60.00, "days": 2, "contractor": False},
+    ]
+    assert round(total_quoted(rentals), 2) == 145.00
+
+
+def test_total_quoted_multiple_rentals():
+    rentals = [
+        {"customer": "Alvarez", "daily_rate": 60.00, "days": 2, "contractor": False},
+        {"customer": "Brennan", "daily_rate": 60.00, "days": 2, "contractor": True},
+        {"customer": "Chowdhury", "daily_rate": 85.00, "days": 4, "contractor": False},
+    ]
+    assert round(total_quoted(rentals), 2) == 584.00

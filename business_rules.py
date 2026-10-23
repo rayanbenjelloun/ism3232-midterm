@@ -38,10 +38,24 @@ def calculate_quote(daily_rate: float, days: int, contractor: bool = False) -> f
         quote += DAMAGE_WAIVER_FEE
     return quote
 
+
 def requires_deposit(quote: float) -> bool:
     """Return whether the quote requires a deposit."""
     return quote >= DEPOSIT_LIMIT
 
+
 def needs_inspection(days: int, quote: float) -> bool:
     """Return whether the rental requires an inspection."""
     return days >= INSPECTION_DAYS and quote > INSPECTION_QUOTE_LIMIT
+
+
+def total_quoted(rentals: list) -> float:
+    """Return the total quoted amount for all rentals"""
+    total = 0.0
+
+    for rental in rentals:
+        quote = calculate_quote(
+            rental["daily_rate"], rental["days"], rental["contractor"]
+        )
+        total += quote
+    return total
