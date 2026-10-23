@@ -8,6 +8,9 @@ STANDARD_DISCOUNT = 0.1
 LONG_RENTAL_DISCOUNT = 0.2
 DAMAGE_WAIVER_LIMIT = 150.00
 DAMAGE_WAIVER_FEE = 25.00
+DEPOSIT_LIMIT = 1000.00
+INSPECTION_DAYS = 5
+INSPECTION_QUOTE_LIMIT = 800.00
 
 
 def calculate_rental_cost(daily_rate: float, days: int) -> float:
@@ -34,3 +37,11 @@ def calculate_quote(daily_rate: float, days: int, contractor: bool = False) -> f
     if quote < DAMAGE_WAIVER_LIMIT:
         quote += DAMAGE_WAIVER_FEE
     return quote
+
+def requires_deposit(quote: float) -> bool:
+    """Return whether the quote requires a deposit."""
+    return quote >= DEPOSIT_LIMIT
+
+def needs_inspection(days: int, quote: float) -> bool:
+    """Return whether the rental requires an inspection."""
+    return days >= INSPECTION_DAYS and quote > INSPECTION_QUOTE_LIMIT
