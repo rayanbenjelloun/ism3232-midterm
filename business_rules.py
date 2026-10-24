@@ -59,3 +59,23 @@ def total_quoted(rentals: list) -> float:
         )
         total += quote
     return total
+
+
+def largest_rental(rentals: list) -> str:
+    """Return the customer with the largest quote, keeping the first tie."""
+    if not rentals:
+        return ""
+
+    largest_customer = rentals[0]["customer"]
+    largest_quote = calculate_quote(
+        rentals[0]["daily_rate"], rentals[0]["days"], rentals[0]["contractor"]
+    )
+
+    for rental in rentals:
+        quote = calculate_quote(
+            rental["daily_rate"], rental["days"], rental["contractor"]
+        )
+        if quote > largest_quote:
+            largest_quote = quote
+            largest_customer = rental["customer"]
+    return largest_customer

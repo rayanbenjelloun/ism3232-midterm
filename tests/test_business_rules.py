@@ -2,6 +2,7 @@ from business_rules import (
     calculate_quote,
     calculate_rental_cost,
     get_rental_discount,
+    largest_rental,
     needs_inspection,
     requires_deposit,
     total_quoted,
@@ -106,3 +107,49 @@ def test_total_quoted_multiple_rentals():
         {"customer": "Chowdhury", "daily_rate": 85.00, "days": 4, "contractor": False},
     ]
     assert round(total_quoted(rentals), 2) == 584.00
+
+
+def test_largest_rental_empty():
+    assert largest_rental([]) == ""
+
+
+def test_largest_rental_finds_largest_quote():
+    rentals = [
+        {
+            "customer": "Alvarez",
+            "daily_rate": 60.00,
+            "days": 2,
+            "contractor": False,
+        },
+        {
+            "customer": "Eastman",
+            "daily_rate": 210.00,
+            "days": 8,
+            "contractor": True,
+        },
+        {
+            "customer": "Fujita",
+            "daily_rate": 250.00,
+            "days": 4,
+            "contractor": False,
+        },
+    ]
+    assert largest_rental(rentals) == "Eastman"
+
+
+def test_largest_rental_tie_keeps_first():
+    rentals = [
+        {
+            "customer": "Alvarez",
+            "daily_rate": 60.00,
+            "days": 2,
+            "contractor": False,
+        },
+        {
+            "customer": "Brennan",
+            "daily_rate": 120.00,
+            "days": 1,
+            "contractor": False,
+        },
+    ]
+    assert largest_rental(rentals) == "Alvarez"
